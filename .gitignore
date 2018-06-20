@@ -6,6 +6,7 @@ afl-fuzz
 afl-g++
 afl-gcc
 afl-gotcpu
+afl-qemu-trace
 afl-showmap
 afl-tmin
 as
