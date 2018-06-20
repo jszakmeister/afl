@@ -10,3 +10,4 @@ afl-qemu-trace
 afl-showmap
 afl-tmin
 as
+/qemu_mode/qemu-*
