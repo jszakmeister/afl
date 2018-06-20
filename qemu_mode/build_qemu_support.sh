@@ -166,7 +166,7 @@ if [ "$ORIG_CPU_TARGET" = "" ]; then
 
   make >/dev/null || exit 1
 
-  gcc test-instr.c -o test-instr || exit 1
+  ${CC:-gcc} test-instr.c -o test-instr || exit 1
 
   unset AFL_INST_RATIO
 
