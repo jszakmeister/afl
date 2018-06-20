@@ -1,0 +1,45 @@
+--- a/configure
++++ b/configure
+@@ -3866,7 +3866,21 @@ if compile_prog "" "" ; then
+   memfd=yes
+ fi
+ 
++# check if memfd is supported under sys/mman.h
++memfd_mman=no
++if test "$memfd" != "yes"; then
++    cat > $TMPC << EOF
++#include <sys/mman.h>
+ 
++int main(void)
++{
++    return memfd_create("foo", MFD_ALLOW_SEALING);
++}
++EOF
++    if compile_prog "" "" ; then
++      memfd_mman=yes
++    fi
++fi
+ 
+ # check for fallocate
+ fallocate=no
+@@ -5621,6 +5635,9 @@ fi
+ if test "$memfd" = "yes" ; then
+   echo "CONFIG_MEMFD=y" >> $config_host_mak
+ fi
++if test "$memfd_mman" = "yes" ; then
++  echo "CONFIG_MEMFD_MMAN=y" >> $config_host_mak
++fi
+ if test "$fallocate" = "yes" ; then
+   echo "CONFIG_FALLOCATE=y" >> $config_host_mak
+ fi
+--- a/util/memfd.c
++++ b/util/memfd.c
+@@ -33,6 +33,8 @@
+ 
+ #ifdef CONFIG_MEMFD
+ #include <sys/memfd.h>
++#elif defined CONFIG_MEMFD_MMAN
++#include <sys/mman.h>
+ #elif defined CONFIG_LINUX
+ #include <sys/syscall.h>
+ #include <asm/unistd.h>
